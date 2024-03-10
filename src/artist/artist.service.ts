@@ -27,17 +27,25 @@ export class ArtistService {
     const artistID = this.database.artists.findIndex(
       (artist) => artist.id === id,
     );
-    this.database.artists.splice(artistID, 1);
-    this.database.tracks.forEach((track) => {
-      if (track.artistId === id) {
-        track.artistId = null;
+    if (artistID !== -1) {
+      this.database.artists.splice(artistID, 1);
+      this.database.tracks.forEach((track) => {
+        if (track.artistId === id) {
+          track.artistId = null;
+        }
+      });
+      this.database.albums.forEach((album) => {
+        if (album.artistId === id) {
+          album.artistId = null;
+        }
+      });
+      const favArtistId = this.database.favorites.artists.findIndex(
+        (artist) => artist.id === id,
+      );
+      if (favArtistId !== -1) {
+        this.database.favorites.artists.splice(favArtistId, 1);
       }
-    });
-    this.database.albums.forEach((album) => {
-      if (album.artistId === id) {
-        album.artistId = null;
-      }
-    });
+    }
     return artistID;
   }
   updateArtist(id: string, updateArtist: UpdateAtristParametr): Artist {

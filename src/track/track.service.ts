@@ -31,7 +31,15 @@ export class TrackService {
 
   deleteTrack(id: string) {
     const trackID = this.database.tracks.findIndex((track) => track.id === id);
-    this.database.tracks.splice(trackID, 1);
+    if (trackID !== -1) {
+      this.database.tracks.splice(trackID, 1);
+      const favTrackId = this.database.favorites.tracks.findIndex(
+        (track) => track.id === id,
+      );
+      if (favTrackId !== -1) {
+        this.database.favorites.tracks.splice(favTrackId, 1);
+      }
+    }
     return trackID;
   }
 

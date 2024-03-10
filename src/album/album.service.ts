@@ -26,12 +26,21 @@ export class AlbumService {
   }
   deleteAlbum(id: string) {
     const albumID = this.database.albums.findIndex((album) => album.id === id);
-    this.database.albums.splice(albumID, 1);
-    this.database.tracks.forEach((track) => {
-      if (track.albumId === id) {
-        track.albumId = null;
+    if (albumID !== -1) {
+      this.database.albums.splice(albumID, 1);
+      this.database.tracks.forEach((album) => {
+        if (album.albumId === id) {
+          album.albumId = null;
+        }
+      });
+      const favAlbumId = this.database.favorites.albums.findIndex(
+        (album) => album.id === id,
+      );
+      if (favAlbumId !== -1) {
+        this.database.favorites.albums.splice(favAlbumId, 1);
       }
-    });
+    }
+
     return albumID;
   }
   updateAlbum(id: string, updateAlbum: UpdateAlbumParametr): Album {

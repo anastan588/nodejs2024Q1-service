@@ -31,7 +31,9 @@ export class UserService {
 
   deleteUser(id: string) {
     const userID = this.database.users.findIndex((user) => user.id === id);
-    this.database.users.splice(userID, 1);
+    if (userID !== -1) {
+      this.database.users.splice(userID, 1);
+    }
     return userID;
   }
 
