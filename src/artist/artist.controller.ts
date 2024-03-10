@@ -37,11 +37,11 @@ export class ArtistController {
     if (!this.uuidRegex.test(artistToFind.id)) {
       throw new HttpException('Artist with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const track = this.artistService.getArtistByID(artistToFind.id);
-    if (!track) {
+    const artist = this.artistService.getArtistByID(artistToFind.id);
+    if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
-    return track;
+    return artist;
   }
 
   @Post()

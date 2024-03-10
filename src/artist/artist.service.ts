@@ -30,8 +30,12 @@ export class ArtistService {
     this.database.artists.splice(artistID, 1);
     this.database.tracks.forEach((track) => {
       if (track.artistId === id) {
-        console.log('popka');
         track.artistId = null;
+      }
+    });
+    this.database.albums.forEach((album) => {
+      if (album.artistId === id) {
+        album.artistId = null;
       }
     });
     return artistID;

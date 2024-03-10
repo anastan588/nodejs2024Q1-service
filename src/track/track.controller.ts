@@ -71,15 +71,15 @@ export class TrackController {
     if (!this.uuidRegex.test(trackToDelete.id)) {
       throw new HttpException('Track with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const userID = this.trackService.deleteTrack(trackToDelete.id);
-    if (userID === -1) {
+    const trackID = this.trackService.deleteTrack(trackToDelete.id);
+    if (trackID === -1) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
-    return userID;
+    return trackID;
   }
 
   @Put(':id')
-  updateUserPassword(
+  updateTrackInfo(
     @Param() trackToUpdate: IDTrackParametr,
     @Body() updateTrack: UpdateTrackParametr,
   ) {
