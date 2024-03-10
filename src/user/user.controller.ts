@@ -11,17 +11,15 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from 'src/database/database.types';
 import {
   IDUserParametr,
   NewUserParametr,
   UpdateUserParametr,
 } from './dto/user.dto';
-import { IsUUID, validate } from 'class-validator';
 
 @Controller('user')
 export class UserController {
-  uuidRegex;
+  uuidRegex: RegExp;
   constructor(private userService: UserService) {
     this.uuidRegex =
       /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -80,6 +78,7 @@ export class UserController {
     }
     return userID;
   }
+
   @Put(':id')
   updateUserPassword(
     @Param() userToUpdate: IDUserParametr,

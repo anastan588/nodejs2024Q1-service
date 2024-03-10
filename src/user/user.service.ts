@@ -38,7 +38,7 @@ export class UserService {
   updateUserPassword(id: string, updateUser: UpdateUserParametr): User {
     const user = this.database.users.find((user) => user.id === id);
     if (!user) {
-      throw new HttpException('User not found', 404);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (user.password !== updateUser.oldPassword) {
       throw new HttpException('Wrong old password', HttpStatus.FORBIDDEN);
