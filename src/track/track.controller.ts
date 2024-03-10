@@ -48,10 +48,13 @@ export class TrackController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createTrack(@Body() newTrack: NewTrackParametr) {
+    console.log(newTrack);
     if (
       Object.keys(newTrack).length === 0 ||
       newTrack.duration === undefined ||
-      newTrack.name === undefined
+      newTrack.name === undefined ||
+      newTrack.duration === null ||
+      newTrack.name === null
     ) {
       throw new HttpException('Track data invalid', HttpStatus.BAD_REQUEST);
     }
@@ -80,8 +83,10 @@ export class TrackController {
     @Param() trackToUpdate: IDTrackParametr,
     @Body() updateTrack: UpdateTrackParametr,
   ) {
-    console.log('update Traack');
-    if (Object.keys(updateTrack).length === 0) {
+    console.log('update Track');
+    console.log(trackToUpdate);
+    console.log(updateTrack);
+    if (Object.keys(updateTrack).length === 0 || updateTrack.name === null) {
       throw new HttpException(
         'Update track data invalid',
         HttpStatus.BAD_REQUEST,
