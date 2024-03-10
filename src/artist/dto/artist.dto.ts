@@ -1,11 +1,4 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class IDArtistParametr {
   @IsUUID()
@@ -15,6 +8,15 @@ export class IDArtistParametr {
 }
 
 export class NewAtristParametr {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+  @IsBoolean()
+  @IsNotEmpty()
+  grammy: boolean;
+}
+
+export class UpdateAtristParametr {
   @IsString()
   @IsNotEmpty()
   name: string;
