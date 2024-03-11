@@ -9,7 +9,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { FavsService } from './favs.service';
-import { IDTrackParametr } from 'src/track/dto/track.dto';
 import { IDFavParametr } from './dto/fav.dto';
 
 @Controller('favs')
