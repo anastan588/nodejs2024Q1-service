@@ -1,0 +1,35 @@
+# Use postgres/example user/password credentials
+version: '3.8'
+
+services:
+  db:
+    container_name: postgress
+    build:
+      context: ./docker_settings/database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - own-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  api:
+    container_name: api
+    build:
+      context: .
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/app
+    networks:
+      - own-network 
+    depends_on:
+      - db
+
+networks:
+  own-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
