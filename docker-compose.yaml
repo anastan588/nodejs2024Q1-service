@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
-      - own-network
+      - user-defined
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -23,12 +23,12 @@ services:
     volumes:
       - .:/app
     networks:
-      - own-network 
+      - user-defined 
     depends_on:
       - db
 
 networks:
-  own-network:
+  user-defined:
     driver: bridge
 
 volumes:
