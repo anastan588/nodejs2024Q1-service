@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
 import { User } from 'src/database/database.types';
 import { NewUserParametr, UpdateUserParametr } from './dto/user.dto';
 import { v4 } from 'uuid';
@@ -22,7 +21,6 @@ export class UserService {
   }
 
   async createUser(createUser: NewUserParametr): Promise<User> {
-    console.log(createUser);
     const newUser: User = {
       id: v4(),
       login: createUser.login.toString(),
@@ -31,16 +29,7 @@ export class UserService {
       updatedAt: new Date().getTime().toString(),
       version: 1,
     };
-    console.log(newUser);
-    console.log(createUser);
-    const creatUser = await this.prisma.user.create({ data: newUser });
-    const id = creatUser.id;
-    const users = await this.prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-    console.log(users);
+    await this.prisma.user.create({ data: newUser });
     return newUser;
   }
 

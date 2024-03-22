@@ -39,9 +39,6 @@ export class TrackController {
       throw new HttpException('Track with invalid id', HttpStatus.BAD_REQUEST);
     }
     const track = this.trackService.getTrackByID(trackToFind.id);
-    if (!track) {
-      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
-    }
     return track;
   }
 
@@ -72,9 +69,6 @@ export class TrackController {
       throw new HttpException('Track with invalid id', HttpStatus.BAD_REQUEST);
     }
     const trackID = this.trackService.deleteTrack(trackToDelete.id);
-    if (trackID === -1) {
-      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
-    }
     return trackID;
   }
 
