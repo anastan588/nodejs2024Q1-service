@@ -38,14 +38,11 @@ export class AlbumController {
       throw new HttpException('Album with invalid id', HttpStatus.BAD_REQUEST);
     }
     const album = this.albumService.getAlbumByID(albumToFind.id);
-    if (!album) {
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    }
     return album;
   }
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createTrack(@Body() newAlbum: NewAlbumParametr) {
+  async createTrack(@Body() newAlbum: NewAlbumParametr) {
     if (
       Object.keys(newAlbum).length === 0 ||
       newAlbum.year === undefined ||
@@ -57,7 +54,7 @@ export class AlbumController {
     }
     console.log('create New Album');
     console.log(newAlbum);
-    const album = this.albumService.createAlbum(newAlbum);
+    const album = await this.albumService.createAlbum(newAlbum);
     return album;
   }
   @Delete(':id')
@@ -69,13 +66,10 @@ export class AlbumController {
       throw new HttpException('Album with invalid id', HttpStatus.BAD_REQUEST);
     }
     const albumID = this.albumService.deleteAlbum(albumToDelete.id);
-    if (albumID === -1) {
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    }
     return albumID;
   }
   @Put(':id')
-  updateAlbumInfo(
+  async updateAlbumInfo(
     @Param() albumToUpdate: IDAlbumParametr,
     @Body() updateAlbum: UpdateAlbumParametr,
   ) {
@@ -97,7 +91,10 @@ export class AlbumController {
     if (!this.uuidRegex.test(albumToUpdate.id)) {
       throw new HttpException('Album with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const album = this.albumService.updateAlbum(albumToUpdate.id, updateAlbum);
+    const album = await this.albumService.updateAlbum(
+      albumToUpdate.id,
+      updateAlbum,
+    );
     return album;
   }
 }

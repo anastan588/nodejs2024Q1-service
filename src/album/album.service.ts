@@ -1,56 +1,90 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
 import { Album } from 'src/database/database.types';
 import { NewAlbumParametr, UpdateAlbumParametr } from './dto/album.dto';
 import { v4 } from 'uuid';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private database: DatabaseService) {}
-  getAllAlbums() {
-    return this.database.albums;
+  constructor(private prisma: PrismaService) {}
+  async getAllAlbums() {
+    return await this.prisma.album.findMany();
   }
-  getAlbumByID(id: string): Album {
-    const album = this.database.albums.find((album) => album.id === id);
+  async getAlbumByID(id: string): Promise<Album> {
+    const album = await this.prisma.album.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!album) {
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
     return album;
   }
-  createAlbum(createAlBum: NewAlbumParametr): Album {
+  async createAlbum(createAlBum: NewAlbumParametr): Promise<Album> {
     const newAlbum: Album = {
       id: v4(),
       year: createAlBum.year,
       name: createAlBum.name,
       artistId: createAlBum.artistId ? createAlBum.artistId : null,
     };
-    this.database.albums.push(newAlbum);
+    await this.prisma.album.create({ data: newAlbum });
     return newAlbum;
   }
-  deleteAlbum(id: string) {
-    const albumID = this.database.albums.findIndex((album) => album.id === id);
-    if (albumID !== -1) {
-      this.database.albums.splice(albumID, 1);
-      this.database.tracks.forEach((album) => {
-        if (album.albumId === id) {
-          album.albumId = null;
-        }
-      });
-      const favAlbumId = this.database.favorites.albums.findIndex(
-        (album) => album.id === id,
-      );
-      if (favAlbumId !== -1) {
-        this.database.favorites.albums.splice(favAlbumId, 1);
-      }
-    }
-
-    return albumID;
-  }
-  updateAlbum(id: string, updateAlbum: UpdateAlbumParametr): Album {
-    const album = this.database.albums.find((album) => album.id === id);
+  async deleteAlbum(id: string) {
+    const album = await this.prisma.album.findUnique({
+      where: {
+        id,
+      },
+    });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    album.name = updateAlbum.name;
-    album.year = updateAlbum.year;
-    album.artistId = updateAlbum.artistId ? updateAlbum.artistId : null;
-    return album;
+    await this.prisma.album.delete({ where: { id: id } });
+    await this.prisma.album.updateMany({
+      where: { artistId: id },
+      data: {
+        artistId: null,
+      },
+    });
+    // this.database.tracks.forEach((album) => {
+    //   if (album.albumId === id) {
+    //     album.albumId = null;
+    //   }
+    // });
+    // const favAlbumId = this.database.favorites.albums.findIndex(
+    //   (album) => album.id === id,
+    // );
+    // if (favAlbumId !== -1) {
+    //   this.database.favorites.albums.splice(favAlbumId, 1);
+    // }
+
+    return album.id;
+  }
+  async updateAlbum(
+    id: string,
+    updateAlbum: UpdateAlbumParametr,
+  ): Promise<Album> {
+    const album = await this.prisma.album.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!album) {
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
+    await this.prisma.album.update({
+      data: {
+        name: updateAlbum.name,
+        year: updateAlbum.year,
+        artistId: updateAlbum.artistId ? updateAlbum.artistId : null,
+      },
+      where: { id: id },
+    });
+    return await this.prisma.album.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 }

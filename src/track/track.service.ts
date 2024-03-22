@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
 import { Track } from 'src/database/database.types';
 import { NewTrackParametr, UpdateTrackParametr } from './dto/track.dto';
 import { v4 } from 'uuid';
@@ -47,6 +46,22 @@ export class TrackService {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
     await this.prisma.track.delete({ where: { id: id } });
+    await this.prisma.track.updateMany({
+      where: {
+        albumId: id,
+      },
+      data: {
+        albumId: null,
+      },
+    });
+    await this.prisma.track.updateMany({
+      where: {
+        artistId: id,
+      },
+      data: {
+        artistId: null,
+      },
+    });
     // const favTrackId = this.database.favorites.tracks.findIndex(
     //   (track) => track.id === id,
     // );
