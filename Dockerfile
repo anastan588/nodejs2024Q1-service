@@ -4,5 +4,5 @@ WORKDIR /app
 COPY package.json .
 COPY  . .
 RUN npm install --omit=dev
-
-CMD ["npm", "run", "start:dev"]
+RUN npx prisma generate
+CMD ["npm", "run", "start:prisma"]

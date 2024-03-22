@@ -1,3 +1,1 @@
 FROM postgres:latest
-WORKDIR /db
-EXPOSE ${POSTGRESS_PORT}
