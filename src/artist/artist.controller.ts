@@ -38,9 +38,6 @@ export class ArtistController {
       throw new HttpException('Artist with invalid id', HttpStatus.BAD_REQUEST);
     }
     const artist = this.artistService.getArtistByID(artistToFind.id);
-    if (!artist) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    }
     return artist;
   }
 
@@ -71,9 +68,6 @@ export class ArtistController {
       throw new HttpException('Artist with invalid id', HttpStatus.BAD_REQUEST);
     }
     const artistID = this.artistService.deleteArtist(artistToDelete.id);
-    if (artistID === -1) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    }
     return artistID;
   }
 

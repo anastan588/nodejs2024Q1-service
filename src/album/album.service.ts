@@ -41,8 +41,16 @@ export class AlbumService {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
     await this.prisma.album.delete({ where: { id: id } });
-    await this.prisma.album.updateMany({
-      where: { artistId: id },
+    // await this.prisma.album.updateMany({
+    //   where: { artistId: id },
+    //   data: {
+    //     artistId: null,
+    //   },
+    // });
+    await this.prisma.track.updateMany({
+      where: {
+        artistId: id,
+      },
       data: {
         artistId: null,
       },
