@@ -41,32 +41,31 @@ export class AlbumService {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
     await this.prisma.album.delete({ where: { id: id } });
-    // await this.prisma.album.updateMany({
-    //   where: { artistId: id },
-    //   data: {
-    //     artistId: null,
-    //   },
-    // });
     await this.prisma.track.updateMany({
       where: {
-        artistId: id,
+        albumId: id,
       },
       data: {
-        artistId: null,
+        albumId: null,
       },
     });
-    // this.database.tracks.forEach((album) => {
-    //   if (album.albumId === id) {
-    //     album.albumId = null;
-    //   }
-    // });
-    // const favAlbumId = this.database.favorites.albums.findIndex(
-    //   (album) => album.id === id,
-    // );
-    // if (favAlbumId !== -1) {
-    //   this.database.favorites.albums.splice(favAlbumId, 1);
-    // }
-
+    const favAlbums = await this.prisma.favorite.findFirst({
+      select: {
+        albums: true,
+      },
+    });
+    const albumID = favAlbums.albums.findIndex((album) => album === id);
+    if (albumID !== -1) {
+      favAlbums.albums.splice(albumID, 1);
+      await this.prisma.favorite.update({
+        where: { id: 1 },
+        data: {
+          tracks: {
+            set: [...favAlbums.albums],
+          },
+        },
+      });
+    }
     return album.id;
   }
   async updateAlbum(

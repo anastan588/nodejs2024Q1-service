@@ -54,6 +54,23 @@ export class ArtistService {
         artistId: null,
       },
     });
+    const favArtists = await this.prisma.favorite.findFirst({
+      select: {
+        artists: true,
+      },
+    });
+    const artistID = favArtists.artists.findIndex((artist) => artist === id);
+    if (artistID !== -1) {
+      favArtists.artists.splice(artistID, 1);
+      await this.prisma.favorite.update({
+        where: { id: 1 },
+        data: {
+          tracks: {
+            set: [...favArtists.artists],
+          },
+        },
+      });
+    }
     // const favArtistId = this.database.favorites.artists.findIndex(
     //   (artist) => artist.id === id,
     // );
@@ -81,6 +98,10 @@ export class ArtistService {
       },
       where: { id: id },
     });
-    return artist;
+    return await this.prisma.artist.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 }

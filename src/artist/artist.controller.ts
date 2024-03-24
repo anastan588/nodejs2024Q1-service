@@ -72,7 +72,7 @@ export class ArtistController {
   }
 
   @Put(':id')
-  updateArtistInfo(
+  async updateArtistInfo(
     @Param() artistToUpdate: IDArtistParametr,
     @Body() updateArtist: UpdateAtristParametr,
   ) {
@@ -93,7 +93,7 @@ export class ArtistController {
     if (!this.uuidRegex.test(artistToUpdate.id)) {
       throw new HttpException('Artist with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const artist = this.artistService.updateArtist(
+    const artist = await this.artistService.updateArtist(
       artistToUpdate.id,
       updateArtist,
     );

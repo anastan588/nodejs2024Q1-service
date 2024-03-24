@@ -46,22 +46,23 @@ export class TrackService {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
     await this.prisma.track.delete({ where: { id: id } });
-    await this.prisma.track.updateMany({
-      where: {
-        albumId: id,
-      },
-      data: {
-        albumId: null,
+    const favTracks = await this.prisma.favorite.findFirst({
+      select: {
+        tracks: true,
       },
     });
-    await this.prisma.track.updateMany({
-      where: {
-        artistId: id,
-      },
-      data: {
-        artistId: null,
-      },
-    });
+    const trackID = favTracks.tracks.findIndex((track) => track === id);
+    if (trackID !== -1) {
+      favTracks.tracks.splice(trackID, 1);
+      await this.prisma.favorite.update({
+        where: { id: 1 },
+        data: {
+          tracks: {
+            set: [...favTracks.tracks],
+          },
+        },
+      });
+    }
     // const favTrackId = this.database.favorites.tracks.findIndex(
     //   (track) => track.id === id,
     // );
