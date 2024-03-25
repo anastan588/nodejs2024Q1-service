@@ -1,14 +1,14 @@
 export interface User {
   id: string; // uuid v4
   login: string;
-  password?: string;
+  password: string;
   version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
+  createdAt: string; // timestamp of creation
+  updatedAt: string; // timestamp of last update
 }
 
 export interface Artist {
-  id: string; // uuid v4
+  id: string; // uuid v4in
   name: string;
   grammy: boolean;
 }

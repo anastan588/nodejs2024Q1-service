@@ -35,12 +35,14 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async getUserById(@Param() usertoFind: IDUserParametr) {
     console.log('get user By Id');
-    console.log(usertoFind.id);
+    console.log(usertoFind);
     if (!this.uuidRegex.test(usertoFind.id)) {
+      console.log('User with invalid id');
       throw new HttpException('User with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const user = this.userService.getUserByID(usertoFind.id);
+    const user = await this.userService.getUserByID(usertoFind.id);
     if (!user) {
+      console.log('User not found');
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return user;
@@ -48,7 +50,7 @@ export class UserController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createUser(@Body() newUser: NewUserParametr) {
+  async createUser(@Body() newUser: NewUserParametr) {
     if (
       Object.keys(newUser).length === 0 ||
       newUser.login === undefined ||
@@ -58,33 +60,33 @@ export class UserController {
       throw new HttpException('User data invalid', HttpStatus.BAD_REQUEST);
     }
     console.log('create New User');
-    const user = this.userService.createUser(newUser);
+    const user = await this.userService.createUser(newUser);
     const result = JSON.parse(JSON.stringify(user));
     delete result.password;
+    result.createdAt = Number(result.createdAt);
+    result.updatedAt = Number(result.updatedAt);
     return result;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(@Param() userToDelete: IDUserParametr) {
+  async deleteUser(@Param() userToDelete: IDUserParametr) {
     console.log('delete User ById');
     console.log(userToDelete.id);
     if (!this.uuidRegex.test(userToDelete.id)) {
       throw new HttpException('User with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const userID = this.userService.deleteUser(userToDelete.id);
-    if (userID === -1) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+    const userID = await this.userService.deleteUser(userToDelete.id);
     return userID;
   }
 
   @Put(':id')
-  updateUserPassword(
+  async updateUserPassword(
     @Param() userToUpdate: IDUserParametr,
     @Body() updateUserWithNewPassword: UpdateUserParametr,
   ) {
     console.log('update User');
+    console.log(userToUpdate.id);
     if (
       Object.keys(updateUserWithNewPassword).length === 0 ||
       updateUserWithNewPassword.newPassword === undefined ||
@@ -95,12 +97,14 @@ export class UserController {
     if (!this.uuidRegex.test(userToUpdate.id)) {
       throw new HttpException('User with invalid id', HttpStatus.BAD_REQUEST);
     }
-    const user = this.userService.updateUserPassword(
+    const user = await this.userService.updateUserPassword(
       userToUpdate.id,
       updateUserWithNewPassword,
     );
     const result = JSON.parse(JSON.stringify(user));
     delete result.password;
+    result.createdAt = Number(result.createdAt);
+    result.updatedAt = Number(result.updatedAt);
     return result;
   }
 }
