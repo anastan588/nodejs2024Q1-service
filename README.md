@@ -19,10 +19,6 @@ npm install
 
 ## Running application
 
-```
-npm start
-```
-
 using Doker
 
 start locally your Docker Engine, after this run:
@@ -61,6 +57,19 @@ To run only specific test suite with authorization
 ```
 npm run test:auth -- <path to suite>
 ```
+## Scan Vulnerabilities
+
+After build images by command 'docker-compose up'
+
+Run scan image with application
+
+```
+npm run docker:scan:api
+```
+Run scan image with PostgresQL
+```
+npm run docker:scan:db
+```
 
 ### Auto-fix and format
 
@@ -77,3 +86,4 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
