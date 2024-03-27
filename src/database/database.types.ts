@@ -33,3 +33,8 @@ export interface Favorite {
   albums: Album[]; // favorite albums ids
   tracks: Track[]; // favorite tracks ids
 }
+
+export class LoginDto {
+  username: string;
+  password: string;
+}
